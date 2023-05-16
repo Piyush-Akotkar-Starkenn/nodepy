@@ -5,17 +5,16 @@ const app = express();
 app.use(express.json());
 
 app.get("/hello/", (req, res) => {
-  const { driveLink } = req.body;
+  const { url } = req.body;
 
   const pythonScript = spawn("python", [
     "-u",
-    "pyModels/yunet_v_5.1.0.py",
-    driveLink,
+    "pyModels/yunet_v_5.1.1.py",
+    url,
   ]);
 
   pythonScript.stdout.on("data", (data) => {
-    // console.log(`Python script output: ${data}`);
-    res.send(`Python script is running with Drive CSV Link: ${data}.`);
+    console.log(`Python script output: ${data}`);
   });
 
   pythonScript.stderr.on("data", (data) => {
@@ -24,6 +23,7 @@ app.get("/hello/", (req, res) => {
 
   pythonScript.on("close", (code) => {
     console.log(`Python script exited with code ${code}`);
+    res.send(`Python script is running with Drive CSV Link: ${url}.`);
   });
 });
 
